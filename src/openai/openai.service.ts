@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { OpenAI } from 'openai';
+import { OpenAI, toFile } from 'openai';
+import * as fs from 'fs';
 
 @Injectable()
 export class OpenaiService {
@@ -19,9 +20,12 @@ export class OpenaiService {
   }
 
   async transcript(audioFile: File) {
-    this.openai.audio.transcriptions.create({
-      file: audioFile,
+    const audio = fs.createReadStream('audio.mp3');
+    const response = await this.openai.audio.transcriptions.create({
+      file: audio,
       model: 'whisper-1',
     });
+
+    return response.text;
   }
 }
