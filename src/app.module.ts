@@ -1,17 +1,23 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { OpenaiModule } from './openai/openai.module';
+import { TelegrafModule } from 'nestjs-telegraf';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
     }),
+    TelegrafModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        token: configService.get('TELEGRAM_BOT_TOKEN'),
+      }),
+      inject: [ConfigService],
+    }),
     OpenaiModule,
   ],
-  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {}

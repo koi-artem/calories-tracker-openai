@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OpenAI } from 'openai';
 
 @Injectable()
-export class OpenaiService implements OnModuleInit {
+export class OpenaiService {
   private readonly openai: OpenAI;
   constructor(private readonly configService: ConfigService) {
     this.openai = new OpenAI({
@@ -23,10 +23,5 @@ export class OpenaiService implements OnModuleInit {
       file: audioFile,
       model: 'whisper-1',
     });
-  }
-
-  async onModuleInit(): Promise<void> {
-    const result = await this.prompt('Say this is test');
-    console.log(result);
   }
 }
